@@ -1,15 +1,17 @@
 import { openai } from '@ai-sdk/openai';
 import { fireworks } from '@ai-sdk/fireworks';
-import {
-  customProvider,
-  extractReasoningMiddleware,
-  wrapLanguageModel,
-} from 'ai';
+import { createDeepSeek } from '@ai-sdk/deepseek';
+import { customProvider, extractReasoningMiddleware, wrapLanguageModel } from 'ai';
 
-export const DEFAULT_CHAT_MODEL: string = 'chat-model-small';
+export const DEFAULT_CHAT_MODEL: string = 'deepseek';
+
+const deepseek = createDeepSeek({
+  apiKey: process.env.DEEPSEEK_API_KEY ?? '',
+});
 
 export const myProvider = customProvider({
   languageModels: {
+    deepseek: deepseek('deepseek-chat'),
     'chat-model-small': openai('gpt-4o-mini'),
     'chat-model-large': openai('gpt-4o'),
     'chat-model-reasoning': wrapLanguageModel({
@@ -32,6 +34,11 @@ interface ChatModel {
 }
 
 export const chatModels: Array<ChatModel> = [
+  {
+    id: 'deepseek',
+    name: 'DeepSeek Model',
+    description: 'DeepSeek Model',
+  },
   {
     id: 'chat-model-small',
     name: 'Small model',
